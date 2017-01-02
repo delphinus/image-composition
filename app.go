@@ -1,6 +1,10 @@
 package imco
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/Songmu/prompter"
 	"github.com/urfave/cli"
 )
 
@@ -22,7 +26,7 @@ func NewApp() *cli.App {
 		},
 		cli.StringFlag{
 			Name:  "output, o",
-			Usage: "The output filename (required)",
+			Usage: "The output filename",
 		},
 	}
 	app.Action = action
@@ -30,13 +34,32 @@ func NewApp() *cli.App {
 	return app
 }
 
-func action(c *cli.Context) {
+func action(c *cli.Context) error {
 	input := c.String("input")
 	overlay := c.String("overlay")
 	output := c.String("output")
 
-	if input == "" || overlay == "" || output == "" {
+	if input == "" || overlay == "" {
 		cli.ShowAppHelp(c)
 		return
 	}
+
+	if _, err := os.Stat(input); os.IsNotExist(err) {
+		return cli.NewExitError(fmt.Sprintf("input file not found: %s", input), InitializationError)
+	}
+
+	if _, err := os.Stat(overlay); os.IsNotExist(err) {
+		return cli.NewExitError(fmt.Sprintf("overlay file not found: %s", overlay), InitializationError)
+	}
+
+	if output == "" {
+		output = "imco-out.gif"
+	}
+	if _, err := os.Stat(output); os.IsExist(err) {
+		if ok := prompter.YN(fmt.Sprintf("'%s' already exists. can I overwrite this?", output), false); !ok {
+			return cli.NewExitError("output file already exists", InitializationError)
+		}
+	}
+
+	return nil
 }
