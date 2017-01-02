@@ -3,14 +3,16 @@ package imco
 import (
 	"image"
 	"image/gif"
+	"image/png"
 	"os"
+	"path"
 
 	"github.com/pkg/errors"
 )
 
 // OverlayImage makes an image overlayed by the other
 func OverlayImage(input, overlay, output string) error {
-	inputImage, err := loadImage(input)
+	inputImage, err := loadAnimationGIF(input)
 	if err != nil {
 		return errors.Wrap(err, "error in loadImage")
 	}
@@ -42,14 +44,31 @@ func loadImage(filename string) (*image.Image, error) {
 		return nil, errors.Wrapf(err, "error in Opening '%s'", filename)
 	}
 
-	image, err := gif.Decode(file)
+	var img image.Image
+	switch path.Ext(filename) {
+	case ".gif":
+		img, err = gif.Decode(file)
+	case ".png":
+		img, err = png.Decode(file)
+	default:
+		return nil, errors.Errorf("image must be GIF or PNG: %s", filename)
+	}
+
 	if err != nil {
 		return nil, errors.Wrapf(err, "error in Decoding '%s'", filename)
 	}
 
-	return &image, err
+	return &img, err
 }
 
-func processOverlay(inputImage, overlayImage *image.Image) (*gif.GIF, error) {
+func loadAnimationGIF(filename string) (*gif.GIF, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error in Opening '%s'", filename)
+	}
+	return gif.DecodeAll(file)
+}
+
+func processOverlay(inputImage *gif.GIF, overlayImage *image.Image) (*gif.GIF, error) {
 	return nil, nil
 }
