@@ -30,6 +30,14 @@ func NewApp() *cli.App {
 			Usage: "The output filename",
 			Value: DefaultOutput,
 		},
+		cli.IntFlag{
+			Name:  "width, w",
+			Usage: "Width of the output file (default: same as input file)",
+		},
+		cli.IntFlag{
+			Name:  "height, h",
+			Usage: "Height of the output file (default: same as input file)",
+		},
 	}
 	app.Action = action
 
@@ -40,6 +48,8 @@ func action(c *cli.Context) error {
 	input := c.String("input")
 	overlay := c.String("overlay")
 	output := c.String("output")
+	width := c.Int("width")
+	height := c.Int("height")
 
 	if input == "" || overlay == "" {
 		cli.ShowAppHelp(c)
@@ -60,7 +70,7 @@ func action(c *cli.Context) error {
 		}
 	}
 
-	if err := OverlayImage(input, overlay, output); err != nil {
+	if err := OverlayImage(input, overlay, output, width, height); err != nil {
 		return cli.NewExitError(errors.Wrap(err, "error in OverlayImange"), OverlayImageError)
 	}
 

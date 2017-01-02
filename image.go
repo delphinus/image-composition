@@ -20,7 +20,7 @@ const (
 )
 
 // OverlayImage makes an image overlayed by the other
-func OverlayImage(input, overlay, output string) error {
+func OverlayImage(input, overlay, output string, width, height int) error {
 	inputImage, err := loadAnimationGIF(input)
 	if err != nil {
 		return errors.Wrap(err, "error in loadImage")
