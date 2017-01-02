@@ -2,12 +2,20 @@ package imco
 
 import (
 	"image"
+	"image/color/palette"
+	"image/draw"
 	"image/gif"
 	"image/png"
 	"os"
 	"path"
 
+	"github.com/nfnt/resize"
 	"github.com/pkg/errors"
+)
+
+const (
+	targetX = 300
+	targetY = 300
 )
 
 // OverlayImage makes an image overlayed by the other
@@ -70,5 +78,36 @@ func loadAnimationGIF(filename string) (*gif.GIF, error) {
 }
 
 func processOverlay(inputImage *gif.GIF, overlayImage *image.Image) (*gif.GIF, error) {
-	return nil, nil
+	outputGIF := gif.GIF{
+		Image:           make([]*image.Paletted, len(inputImage.Image)),
+		Delay:           inputImage.Delay,
+		Disposal:        inputImage.Disposal,
+		BackgroundIndex: inputImage.BackgroundIndex,
+	}
+
+	firstFrameBounds := inputImage.Image[0].Bounds()
+	b := image.Rect(0, 0, firstFrameBounds.Dx(), firstFrameBounds.Dy())
+	frameImage := image.NewRGBA(b)
+
+	for i, frame := range inputImage.Image {
+		if i == 0 {
+			firstFrameBounds = frame.Bounds()
+		}
+		bounds := frame.Bounds()
+		draw.Draw(frameImage, bounds, frame, bounds.Min, draw.Over)
+		outputGIF.Image[i] = imageToPaletted(resizeImage(frameImage))
+	}
+
+	return &outputGIF, nil
+}
+
+func resizeImage(img image.Image) image.Image {
+	return resize.Resize(targetX, targetY, img, resize.Bilinear)
+}
+
+func imageToPaletted(img image.Image) *image.Paletted {
+	bounds := img.Bounds()
+	paletted := image.NewPaletted(bounds, palette.Plan9)
+	draw.FloydSteinberg.Draw(paletted, bounds, img, image.ZP)
+	return paletted
 }
