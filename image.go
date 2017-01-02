@@ -26,10 +26,12 @@ func OverlayImage(input, overlay, output string, width, height uint) error {
 		return errors.Wrap(err, "error in loadImage")
 	}
 
+	DebugTime("processOverlay start")
 	outputGIF, err := processOverlay(inputImage, overlayImage, width, height)
 	if err != nil {
 		return errors.Wrap(err, "error in processOverlay")
 	}
+	DebugTime("processOverlay end")
 
 	outputFile, err := os.Create(output)
 	if err != nil {

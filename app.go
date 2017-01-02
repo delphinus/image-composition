@@ -2,6 +2,7 @@ package imco
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/Songmu/prompter"
@@ -38,8 +39,18 @@ func NewApp() *cli.App {
 			Name:  "height, t",
 			Usage: "Height of the output file (default: same as input file)",
 		},
+		cli.BoolFlag{
+			Name:  "debug, d",
+			Usage: "Show debug log",
+		},
 	}
 	app.Action = action
+	app.Before = func(c *cli.Context) error {
+		if c.Bool("debug") {
+			logger = log.New(c.App.Writer, "imco:", log.LstdFlags)
+		}
+		return nil
+	}
 
 	return app
 }
