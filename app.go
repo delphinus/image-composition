@@ -28,6 +28,7 @@ func NewApp() *cli.App {
 		cli.StringFlag{
 			Name:  "output, o",
 			Usage: "The output filename",
+			Value: DefaultOutput,
 		},
 	}
 	app.Action = action
@@ -53,9 +54,6 @@ func action(c *cli.Context) error {
 		return cli.NewExitError(fmt.Sprintf("overlay file not found: %s", overlay), InitializationError)
 	}
 
-	if output == "" {
-		output = "imco-out.gif"
-	}
 	if _, err := os.Stat(output); os.IsExist(err) {
 		if ok := prompter.YN(fmt.Sprintf("'%s' already exists. can I overwrite this?", output), false); !ok {
 			return cli.NewExitError("output file already exists", InitializationError)
