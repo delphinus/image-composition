@@ -7,3 +7,5 @@ import:
 - package: github.com/Songmu/prompter
   version: ^0.1.0
 - package: github.com/nfnt/resize
+- package: github.com/soniakeys/quant
+  version: ^0.2.0

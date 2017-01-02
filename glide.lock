@@ -1,5 +1,5 @@
-hash: 3d3f7bd8c34844cf5cf61201f2c4f4d95240409b635891d7a57de7a3bbe5eecf
-updated: 2017-01-02T18:47:09.565189533+09:00
+hash: bb0ee6f4d19b810f8df0d16047c1febbe7ae43045cd93741107135af6ac9b75e
+updated: 2017-01-02T19:52:54.780212045+09:00
 imports:
 - name: github.com/mattn/go-isatty
   version: 30a891c33c7cde7b02a981314b4228ec99380cca
@@ -9,6 +9,8 @@ imports:
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/Songmu/prompter
   version: b5721e8d556682bcef33262731d98a39dee14dc4
+- name: github.com/soniakeys/quant
+  version: f70d7704be6abeebac2770a2a166b2def14cbf38
 - name: github.com/urfave/cli
   version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 - name: golang.org/x/crypto
