@@ -1,8 +1,10 @@
-hash: 013309deb7d861885aca1bdce2b02b639fdb2ef65f9523c4845df2880b108cad
-updated: 2017-01-02T15:59:36.090104918+09:00
+hash: 5f6a47c28fc9a23595b1e0e7f112108f13d8c484bb3fed1dadf8f172e245adeb
+updated: 2017-01-02T16:38:03.018598306+09:00
 imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/Songmu/prompter
+  version: b5721e8d556682bcef33262731d98a39dee14dc4
 - name: github.com/urfave/cli
   version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 testImports: []
