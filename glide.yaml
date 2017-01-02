@@ -1,0 +1,6 @@
+package: github.com/delphinus/image-composition
+import:
+- package: github.com/urfave/cli
+  version: ^1.19.1
+- package: github.com/pkg/errors
+  version: ^0.8.0
