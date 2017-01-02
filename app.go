@@ -19,15 +19,15 @@ func NewApp() *cli.App {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "input, i",
-			Usage: "The input animation GIF (required)",
+			Usage: "Input animation GIF (required)",
 		},
 		cli.StringFlag{
 			Name:  "overlay, l",
-			Usage: "The overlay image to cover the input animation GIF (required)",
+			Usage: "Overlay image to cover the input animation GIF (required)",
 		},
 		cli.StringFlag{
 			Name:  "output, o",
-			Usage: "The output filename",
+			Usage: "Output filename",
 			Value: DefaultOutput,
 		},
 		cli.IntFlag{
