@@ -14,13 +14,8 @@ import (
 	"github.com/soniakeys/quant/median"
 )
 
-const (
-	targetX = 300
-	targetY = 300
-)
-
 // OverlayImage makes an image overlayed by the other
-func OverlayImage(input, overlay, output string, width, height int) error {
+func OverlayImage(input, overlay, output string, width, height uint) error {
 	inputImage, err := loadAnimationGIF(input)
 	if err != nil {
 		return errors.Wrap(err, "error in loadImage")
@@ -31,7 +26,7 @@ func OverlayImage(input, overlay, output string, width, height int) error {
 		return errors.Wrap(err, "error in loadImage")
 	}
 
-	outputGIF, err := processOverlay(inputImage, overlayImage)
+	outputGIF, err := processOverlay(inputImage, overlayImage, width, height)
 	if err != nil {
 		return errors.Wrap(err, "error in processOverlay")
 	}
@@ -78,7 +73,7 @@ func loadAnimationGIF(filename string) (*gif.GIF, error) {
 	return gif.DecodeAll(file)
 }
 
-func processOverlay(inputImage *gif.GIF, overlayImage *image.Image) (*gif.GIF, error) {
+func processOverlay(inputImage *gif.GIF, overlayImage *image.Image, width, height uint) (*gif.GIF, error) {
 	outputGIF := gif.GIF{
 		Image:           make([]*image.Paletted, len(inputImage.Image)),
 		Delay:           inputImage.Delay,
@@ -90,20 +85,33 @@ func processOverlay(inputImage *gif.GIF, overlayImage *image.Image) (*gif.GIF, e
 	b := image.Rect(0, 0, firstFrameBounds.Dx(), firstFrameBounds.Dy())
 	frameImage := image.NewRGBA(b)
 
+	if width == 0 {
+		width = uint(firstFrameBounds.Dx())
+		if height == 0 {
+			height = uint(firstFrameBounds.Dy())
+		}
+	}
+
 	for i, frame := range inputImage.Image {
 		if i == 0 {
 			firstFrameBounds = frame.Bounds()
 		}
 		bounds := frame.Bounds()
 		draw.Draw(frameImage, bounds, frame, bounds.Min, draw.Over)
-		outputGIF.Image[i] = imageToPaletted(resizeImage(frameImage))
+		var img image.Image
+		if width != uint(firstFrameBounds.Dx()) {
+			img = resizeImage(frameImage, width, height)
+		} else {
+			img = frameImage
+		}
+		outputGIF.Image[i] = imageToPaletted(img)
 	}
 
 	return &outputGIF, nil
 }
 
-func resizeImage(img image.Image) image.Image {
-	return resize.Resize(targetX, targetY, img, resize.Bilinear)
+func resizeImage(img image.Image, width, height uint) image.Image {
+	return resize.Resize(width, height, img, resize.Bilinear)
 }
 
 func imageToPaletted(img image.Image) *image.Paletted {

@@ -30,12 +30,12 @@ func NewApp() *cli.App {
 			Usage: "Output filename",
 			Value: DefaultOutput,
 		},
-		cli.IntFlag{
+		cli.UintFlag{
 			Name:  "width, w",
 			Usage: "Width of the output file (default: same as input file)",
 		},
-		cli.IntFlag{
-			Name:  "height, h",
+		cli.UintFlag{
+			Name:  "height, t",
 			Usage: "Height of the output file (default: same as input file)",
 		},
 	}
@@ -48,8 +48,8 @@ func action(c *cli.Context) error {
 	input := c.String("input")
 	overlay := c.String("overlay")
 	output := c.String("output")
-	width := c.Int("width")
-	height := c.Int("height")
+	width := c.Uint("width")
+	height := c.Uint("height")
 
 	if input == "" || overlay == "" {
 		cli.ShowAppHelp(c)
