@@ -84,8 +84,8 @@ func processOverlay(inputImage *gif.GIF, overlayImage *image.Image, width, heigh
 	}
 
 	firstFrameBounds := inputImage.Image[0].Bounds()
-	b := image.Rect(0, 0, firstFrameBounds.Dx(), firstFrameBounds.Dy())
-	frameImage := image.NewRGBA(b)
+	firstFrameRectangle := image.Rect(0, 0, firstFrameBounds.Dx(), firstFrameBounds.Dy())
+	frameImage := image.NewRGBA(firstFrameRectangle)
 
 	if width == 0 {
 		width = uint(firstFrameBounds.Dx())
@@ -94,17 +94,24 @@ func processOverlay(inputImage *gif.GIF, overlayImage *image.Image, width, heigh
 		}
 	}
 
+	resizedOverlay := resizeImage(*overlayImage, width, height)
+
 	for i, frame := range inputImage.Image {
 		if i == 0 {
 			firstFrameBounds = frame.Bounds()
 		}
 		bounds := frame.Bounds()
 		draw.Draw(frameImage, bounds, frame, bounds.Min, draw.Over)
+
+		sticker := image.NewRGBA(firstFrameRectangle)
+		draw.Draw(sticker, bounds, frameImage, bounds.Min, draw.Src)
+		draw.Draw(sticker, bounds, resizedOverlay, bounds.Min, draw.Over)
+
 		var img image.Image
 		if width != uint(firstFrameBounds.Dx()) {
-			img = resizeImage(frameImage, width, height)
+			img = resizeImage(sticker, width, height)
 		} else {
-			img = frameImage
+			img = sticker
 		}
 		outputGIF.Image[i] = imageToPaletted(img)
 	}
