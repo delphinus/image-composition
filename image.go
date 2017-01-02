@@ -2,7 +2,7 @@ package imco
 
 import (
 	"image"
-	"image/color/palette"
+	"image/color"
 	"image/draw"
 	"image/gif"
 	"image/png"
@@ -11,6 +11,7 @@ import (
 
 	"github.com/nfnt/resize"
 	"github.com/pkg/errors"
+	"github.com/soniakeys/quant/median"
 )
 
 const (
@@ -107,7 +108,9 @@ func resizeImage(img image.Image) image.Image {
 
 func imageToPaletted(img image.Image) *image.Paletted {
 	bounds := img.Bounds()
-	paletted := image.NewPaletted(bounds, palette.Plan9)
+	q := median.Quantizer(256)
+	pal := q.Quantize(make(color.Palette, 0, 256), img)
+	paletted := image.NewPaletted(bounds, pal)
 	draw.FloydSteinberg.Draw(paletted, bounds, img, image.ZP)
 	return paletted
 }
