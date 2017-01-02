@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Songmu/prompter"
+	"github.com/pkg/errors"
 	"github.com/urfave/cli"
 )
 
@@ -41,7 +42,7 @@ func action(c *cli.Context) error {
 
 	if input == "" || overlay == "" {
 		cli.ShowAppHelp(c)
-		return
+		return cli.NewExitError("input & overlay both needed", InitializationError)
 	}
 
 	if _, err := os.Stat(input); os.IsNotExist(err) {
@@ -59,6 +60,10 @@ func action(c *cli.Context) error {
 		if ok := prompter.YN(fmt.Sprintf("'%s' already exists. can I overwrite this?", output), false); !ok {
 			return cli.NewExitError("output file already exists", InitializationError)
 		}
+	}
+
+	if err := OverlayImage(input, overlay, output); err != nil {
+		return cli.NewExitError(errors.Wrap(err, "error in OverlayImange"), OverlayImageError)
 	}
 
 	return nil
