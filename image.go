@@ -126,8 +126,8 @@ func resizeImage(img image.Image, width, height uint) image.Image {
 func imageToPaletted(img image.Image) *image.Paletted {
 	bounds := img.Bounds()
 	q := median.Quantizer(256)
-	pal := q.Quantize(make(color.Palette, 0, 256), img)
-	paletted := image.NewPaletted(bounds, pal)
+	palette := q.Quantize(make(color.Palette, 0, 256), img)
+	paletted := image.NewPaletted(bounds, palette)
 	draw.FloydSteinberg.Draw(paletted, bounds, img, image.ZP)
 	return paletted
 }
