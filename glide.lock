@@ -1,10 +1,22 @@
-hash: 5f6a47c28fc9a23595b1e0e7f112108f13d8c484bb3fed1dadf8f172e245adeb
-updated: 2017-01-02T16:38:03.018598306+09:00
+hash: 3d3f7bd8c34844cf5cf61201f2c4f4d95240409b635891d7a57de7a3bbe5eecf
+updated: 2017-01-02T18:47:09.565189533+09:00
 imports:
+- name: github.com/mattn/go-isatty
+  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/nfnt/resize
+  version: 891127d8d1b52734debe1b3c3d7e747502b6c366
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/Songmu/prompter
   version: b5721e8d556682bcef33262731d98a39dee14dc4
 - name: github.com/urfave/cli
   version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
+- name: golang.org/x/crypto
+  version: 01be46f62051d02cb6a36c9b47b37b24e5758c81
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/sys
+  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  subpackages:
+  - unix
 testImports: []
