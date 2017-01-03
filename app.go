@@ -47,7 +47,7 @@ func NewApp() *cli.App {
 	app.Action = action
 	app.Before = func(c *cli.Context) error {
 		if c.Bool("debug") {
-			logger = log.New(c.App.Writer, "imco:", log.LstdFlags)
+			logger = log.New(c.App.Writer, "", log.LstdFlags)
 		}
 		return nil
 	}
