@@ -84,9 +84,6 @@ func processOverlay(inputImage *gif.GIF, overlayImage *image.Image, width, heigh
 	}
 
 	firstFrameBounds := inputImage.Image[0].Bounds()
-	firstFrameRectangle := image.Rect(0, 0, firstFrameBounds.Dx(), firstFrameBounds.Dy())
-	frameImage := image.NewRGBA(firstFrameRectangle)
-
 	if width == 0 {
 		width = uint(firstFrameBounds.Dx())
 		if height == 0 {
@@ -97,14 +94,9 @@ func processOverlay(inputImage *gif.GIF, overlayImage *image.Image, width, heigh
 	resizedOverlay := resizeImage(*overlayImage, width, height)
 
 	for i, frame := range inputImage.Image {
-		if i == 0 {
-			firstFrameBounds = frame.Bounds()
-		}
 		bounds := frame.Bounds()
-		draw.Draw(frameImage, bounds, frame, bounds.Min, draw.Over)
-
-		sticker := image.NewRGBA(firstFrameRectangle)
-		draw.Draw(sticker, bounds, frameImage, bounds.Min, draw.Src)
+		sticker := image.NewRGBA(bounds)
+		draw.Draw(sticker, bounds, frame, bounds.Min, draw.Over)
 		draw.Draw(sticker, bounds, resizedOverlay, bounds.Min, draw.Over)
 
 		var img image.Image
@@ -127,6 +119,7 @@ func imageToPaletted(img image.Image) *image.Paletted {
 	bounds := img.Bounds()
 	q := median.Quantizer(256)
 	palette := q.Quantize(make(color.Palette, 0, 256), img)
+	palette[0] = color.Alpha{0}
 	paletted := image.NewPaletted(bounds, palette)
 	draw.FloydSteinberg.Draw(paletted, bounds, img, image.ZP)
 	return paletted
